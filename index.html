@@ -171,5 +171,43 @@
     <footer>
         <p>Created by Safa - Sharing the Power of GIS 🌍</p>
     </footer>
+	<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const nameInput = document.getElementById("name");
+        const topicSelect = document.getElementById("topic");
+        const form = document.querySelector("form");
+        nameInput.addEventListener("input", () => {
+            if (nameInput.value.length > 0) {
+                nameInput.style.borderColor = "green";
+            } else {
+                nameInput.style.borderColor = "#ccc";
+            }
+        });
+
+        topicSelect.addEventListener("change", () => {
+            alert(`Great choice! You're interested in ${topicSelect.options[topicSelect.selectedIndex].text}.`);
+        });
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const message = document.getElementById("message").value;
+
+            if (!email.includes("@")) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            if (message.trim() === "") {
+                alert("Please leave us a message before submitting.");
+                return;
+            }
+
+            alert("Thank you for your feedback! Your input has been received.");
+            form.reset();
+        });
+    });
+</script>
+
 </body>
 </html>
