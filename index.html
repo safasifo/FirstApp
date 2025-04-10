@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About GIS - Transforming the World</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -199,63 +201,54 @@
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const nameInput = document.getElementById("name");
-      const topicSelect = document.getElementById("topic");
-      const form = document.querySelector("form");
-      const messageBox = document.getElementById("message");
-      const typingMessage = document.getElementById("typingMessage");
+$(document).ready(function () {
+  $('#name').on('input', function () {
+    $(this).css('border-color', $(this).val().length > 0 ? 'green' : '#ccc');
+  });
 
-      nameInput.addEventListener("input", () => {
-        nameInput.style.borderColor = nameInput.value.length > 0 ? "green" : "#ccc";
+  $('#topic').on('change', function () {
+    alert(`Great choice! You're interested in ${$('#topic option:selected').text()}.`);
+  });
+
+  $('#message').on('input', function () {
+    $('#typingMessage').css('display', $(this).val().trim() !== '' ? 'inline' : 'none');
+  });
+
+  $('form').on('submit', function (e) {
+    e.preventDefault();
+    const email = $('#email').val();
+    const message = $('#message').val();
+
+    if (!email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    if ($.trim(message) === '') {
+      alert('Please leave us a message before submitting.');
+      return;
+    }
+
+    alert('Thank you for your feedback! Your input has been received.');
+    this.reset();
+    $('#typingMessage').hide();
+  });
+
+  function loadRandomQuote() {
+    $.getJSON('https://api.freeapi.app/api/v1/public/quotes/quote/random')
+      .done(function (data) {
+        $('#quoteText').text(`"${data.data.content}"`);
+        $('#quoteAuthor').text(`– ${data.data.author}`);
+      })
+      .fail(function () {
+        $('#quoteText').text("Could not load quote.");
+        $('#quoteAuthor').text("");
       });
+  }
 
-      topicSelect.addEventListener("change", () => {
-        alert(`Great choice! You're interested in ${topicSelect.options[topicSelect.selectedIndex].text}.`);
-      });
+  loadRandomQuote();
+});
 
-      messageBox.addEventListener("input", () => {
-        typingMessage.style.display = messageBox.value.trim() !== "" ? "inline" : "none";
-      });
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-        const message = messageBox.value;
-
-        if (!email.includes("@")) {
-          alert("Please enter a valid email address.");
-          return;
-        }
-
-        if (message.trim() === "") {
-          alert("Please leave us a message before submitting.");
-          return;
-        }
-
-        alert("Thank you for your feedback! Your input has been received.");
-        form.reset();
-        typingMessage.style.display = "none";
-      });
-
-
-      function loadRandomQuote() {
-        fetch('https://api.freeapi.app/api/v1/public/quotes/quote/random')
-          .then(response => response.json())
-          .then(data => {
-		  console.log(data);
-            document.getElementById('quoteText').textContent = `"${data.data.content}"`;
-            document.getElementById('quoteAuthor').textContent = `– ${data.data.author}`;
-          })
-          .catch(error => {
-            document.getElementById('quoteText').textContent = "Could not load quote.";
-            document.getElementById('quoteAuthor').textContent = "";
-            console.error("Quote API Error:", error);
-          });
-      }
-
-      loadRandomQuote();
-    });
   </script>
 </body>
 </html>
